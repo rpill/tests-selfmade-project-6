@@ -23,8 +23,9 @@ const colorScheme = async (page) => {
 };
 
 const switchScheme = async (htmlPath) => {
+  const launchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
   const viewport = { width: 1024, height: 768 };
-  const { browser, page } = await launchBrowser(htmlPath, { viewport });
+  const { browser, page } = await launchBrowser(htmlPath, { launchOptions, viewport });
   const buttonSelector = '.header__theme-menu-button.header__theme-menu-button_type_dark';
   const hasButton = await hasElementBySelectors(page, buttonSelector);
 

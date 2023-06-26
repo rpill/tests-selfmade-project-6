@@ -56,7 +56,8 @@ const app = async (projectPath, lng) => {
 
     const indexPath = path.join(projectPath, 'index.html');
     const viewport = { width: 1024, height: 768 };
-    const { browser, page } = await launchBrowser(indexPath, { viewport });
+    const launchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+    const { browser, page } = await launchBrowser(indexPath, { launchOptions, viewport });
     const errors = (await Promise.all([
       w3c(projectPath, 'index.html'),
       stylelint(projectPath),
@@ -74,19 +75,19 @@ const app = async (projectPath, lng) => {
         canonicalImage: 'layout-canonical-1024.jpg',
         pageImage: 'layout-1024.jpg',
         outputImage: 'output-1024.jpg',
-        browserOptions: { viewport: { width: 1024, height: 768 } },
+        browserOptions: { launchOptions, viewport: { width: 1024, height: 768 } },
       }),
       compareLayout(indexPath, {
         canonicalImage: 'layout-canonical-768.jpg',
         pageImage: 'layout-768.jpg',
         outputImage: 'output-768.jpg',
-        browserOptions: { viewport: { width: 768, height: 1024 } },
+        browserOptions: { launchOptions, viewport: { width: 768, height: 1024 } },
       }),
       compareLayout(indexPath, {
         canonicalImage: 'layout-canonical-375.jpg',
         pageImage: 'layout-375.jpg',
         outputImage: 'output-375.jpg',
-        browserOptions: { viewport: { width: 375, height: 668 } },
+        browserOptions: { launchOptions, viewport: { width: 375, height: 668 } },
       }),
     ]))
       .filter(Boolean)
