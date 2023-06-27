@@ -61,7 +61,7 @@ const app = async (projectPath, lng) => {
     const errors = (await Promise.all([
       w3c(projectPath, 'index.html'),
       stylelint(projectPath),
-      orderStyles(page, ['globals.css', 'fonts.css']),
+      orderStyles(page, ['fonts.css', 'globals.css']),
       lang(page, lng),
       titleEmmet(page),
       colorScheme(page),
