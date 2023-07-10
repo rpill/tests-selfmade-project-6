@@ -3,9 +3,9 @@ import pixels from 'image-pixels';
 import {
   launchBrowser,
   hasElementBySelectors,
+  getStyle,
 } from 'lib-verstka-tests';
 import {
-  getStyle,
   sortColors,
   compareColors,
 } from './utils.js';
