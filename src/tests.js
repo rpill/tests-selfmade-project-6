@@ -22,10 +22,10 @@ const colorScheme = async (page) => {
   return false;
 };
 
-const switchScheme = async (htmlPath) => {
+const switchScheme = async (url) => {
   const launchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
   const viewport = { width: 1024, height: 768 };
-  const { browser, page } = await launchBrowser(htmlPath, { launchOptions, viewport });
+  const { browser, page } = await launchBrowser(url, { launchOptions, viewport });
   const buttonSelector = '.header__theme-menu-button.header__theme-menu-button_type_dark';
   const hasButton = await hasElementBySelectors(page, buttonSelector);
 
@@ -40,6 +40,8 @@ const switchScheme = async (htmlPath) => {
     const imgs = document.querySelectorAll('img');
     imgs.forEach((img) => img.remove());
   });
+  await page.evaluate(() => window.scrollTo(0, Number.MAX_SAFE_INTEGER));
+  await page.waitForTimeout(2000);
   await page.screenshot({ path: 'layout-dark.jpg', fullPage: true });
   const { colors: canonicalColors } = palette(await pixels('./layout-canonical-dark.jpg'), 4);
   const { colors: studentColors } = palette(await pixels('./layout-dark.jpg'), 4);

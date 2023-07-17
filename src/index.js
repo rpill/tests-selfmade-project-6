@@ -54,10 +54,10 @@ const app = async (projectPath, lng) => {
       return structureErrors;
     }
 
-    const indexPath = path.join(projectPath, 'index.html');
+    const baseUrl = 'http://localhost:3000';
     const viewport = { width: 1024, height: 768 };
     const launchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-    const { browser, page } = await launchBrowser(indexPath, { launchOptions, viewport });
+    const { browser, page } = await launchBrowser(baseUrl, { launchOptions, viewport });
     const errors = (await Promise.all([
       w3c(projectPath, 'index.html'),
       stylelint(projectPath),
@@ -65,29 +65,44 @@ const app = async (projectPath, lng) => {
       lang(page, lng),
       titleEmmet(page),
       colorScheme(page),
-      switchScheme(indexPath),
+      switchScheme(baseUrl),
       blockFullScreen(page, 'header'),
       blockFullScreen(page, 'footer'),
       semanticTags(page, ['header', 'main', 'section', 'footer', 'nav']),
       resetMargins(page, ['body']),
       horizontalScroll(page),
-      compareLayout(indexPath, {
+      compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-1024.jpg',
         pageImage: 'layout-1024.jpg',
         outputImage: 'output-1024.jpg',
         browserOptions: { launchOptions, viewport: { width: 1024, height: 768 } },
+      }, {
+        onBeforeScreenshot: async (p) => {
+          await p.evaluate(() => window.scrollTo(0, Number.MAX_SAFE_INTEGER));
+          await p.waitForTimeout(2000);
+        },
       }),
-      compareLayout(indexPath, {
+      compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-768.jpg',
         pageImage: 'layout-768.jpg',
         outputImage: 'output-768.jpg',
         browserOptions: { launchOptions, viewport: { width: 768, height: 1024 } },
+      }, {
+        onBeforeScreenshot: async (p) => {
+          await p.evaluate(() => window.scrollTo(0, Number.MAX_SAFE_INTEGER));
+          await p.waitForTimeout(2000);
+        },
       }),
-      compareLayout(indexPath, {
+      compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-375.jpg',
         pageImage: 'layout-375.jpg',
         outputImage: 'output-375.jpg',
         browserOptions: { launchOptions, viewport: { width: 375, height: 668 } },
+      }, {
+        onBeforeScreenshot: async (p) => {
+          await p.evaluate(() => window.scrollTo(0, Number.MAX_SAFE_INTEGER));
+          await p.waitForTimeout(2000);
+        },
       }),
     ]))
       .filter(Boolean)
